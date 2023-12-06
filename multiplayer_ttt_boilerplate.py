@@ -2,7 +2,7 @@ import turtle
 ################################################################
 #TODO:		Import the sheet_dot_best_manager file below	   #
 ################################################################
-
+from sheet_dot_best_manager import sheet_manager
 
 ################################################################
 
@@ -104,13 +104,14 @@ def gameover(b):
 	if b[2][0]>0 and b[2][0] == b[1][1] and b[1][1] == b[0][2]: return b[2][0]
 	p = 0
 	for i in range(3):
-		for j in range(3):
-			p += (1 if b[i][j] > 0 else 0) # 'p=p+1 if b[i][j]>0 else p=p+0'
-	if p==9: return 3
-	else: return 0
+        for j in range(3):
+            p+= (1 if b[i][j] > 0 else 0)
+        if p==0: return 3
+        else: return 0
 	
 
 def play(x,y):
+    
 	# print("X:Y",x,y)
 	# Cordinate system before conversion (Top left is (-5,5) and bottom right is (5,-5)):
 	'''
@@ -169,8 +170,8 @@ def play(x,y):
 	global turn, player_1, player_2,continue_playing,b, current_turn
 	i=-(int(y-3))//2
 	j=(int(x+3))//2
-
-	if i>2 or j>2 or i<0 or j<0 or b[i][j]!=0: 
+    input_player()    
+    if i>2 or j>2 or i<0 or j<0 or b[i][j]!=0: 
 		return # Condition will be true if user will click outside the designated area 
 	if turn == 'x': 
 		b[i][j] = 1	#Assign b[i][j] as 1 and turn as 'o'
@@ -181,7 +182,6 @@ def play(x,y):
 	################################################################
 	#TODO:		Send data to store in the sheet					   #
 	################################################################
-
 
 	################################################################
 	draw_and_check(i, j)
@@ -203,7 +203,6 @@ def draw_and_check(i, j):
 
 def reinitialize_screen():
 	global b,turn,continue_playing
-
 	if(continue_playing is not None and continue_playing.lower()=='yes'):
 		turtle.resetscreen()
 		b = [ [ 0,0,0 ], [ 0,0,0 ], [ 0,0,0 ] ]  # Nested list representing the value inside each box of the game.
@@ -228,21 +227,14 @@ def refresh_sheet():
 	#TODO: Get data from the sheet and redraw if there is new data #
 	################################################################
 
-
-	################################################################
-	
-
 def clear_sheet():
-	global connect
-	print("Deleting previous data...")
-	################################################################
-	#TODO: Delete all previous data from the sheet				   #
-	################################################################
-
-
-	################################################################
-	
-
+    global connect
+    connect = sheet_manager("https://sheet.best/api/sheets/49dbdd14-2dce-4a70-be43-7adcad372027")
+    data=connect.get_all_data()
+    print(data)
+    
+    
+    
 if __name__ == "__main__":
 	initialize_screen()
 	screen.onclick(play) #Bind function to mouse-click event on canvas. Coordinates of the click are passed as an argument to the function.
